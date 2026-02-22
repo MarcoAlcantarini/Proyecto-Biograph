@@ -1,4 +1,4 @@
-package modelo;
+package estructuras;
 
 /**
  * Implementación de una lista doblemente enlazada.
@@ -327,3 +327,4 @@ public class Lista<T> {
         return sb.toString();
     }
 }
+
