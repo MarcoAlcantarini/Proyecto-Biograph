@@ -1,13 +1,18 @@
-package estructuras;
+package modelo;
 
 /**
  * Implementación de una lista doblemente enlazada.
- * Permite agregar, eliminar, buscar y recorrer elementos en ambas direcciones.
+ * Permite agregar, eliminar, buscar y recorrer elementos en ambas direcciones
  */
 public class Lista<T> {
-    private Nodo<T> cabeza; // Primer nodo de la lista
-    private Nodo<T> cola;   // Último nodo de la lista
-    private int tamaño;     // Cantidad de elementos
+    /** Primer nodo de la lista */
+    private Nodo<T> cabeza;
+    
+    /** Último nodo de la lista */
+    private Nodo<T> cola;
+    
+    /** Cantidad de elementos en la lista */
+    private int tamaño;
     
     /**
      * Constructor que crea una lista vacía.
@@ -22,7 +27,8 @@ public class Lista<T> {
     
     /**
      * Agrega un elemento al final de la lista.
-     * @param dato El dato a agregar.
+     * 
+     * @param dato El dato a agregar
      */
     public void agregar(T dato) {
         Nodo<T> nuevoNodo = new Nodo<>(dato);
@@ -41,9 +47,29 @@ public class Lista<T> {
     }
     
     /**
+     * Agrega un elemento al inicio de la lista.
+     * 
+     * @param dato El dato a agregar
+     */
+    public void agregarAlInicio(T dato) {
+        Nodo<T> nuevoNodo = new Nodo<>(dato);
+        
+        if (estaVacia()) {
+            cabeza = nuevoNodo;
+            cola = nuevoNodo;
+        } else {
+            nuevoNodo.setSiguiente(cabeza);
+            cabeza.setAnterior(nuevoNodo);
+            cabeza = nuevoNodo;
+        }
+        tamaño++;
+    }
+    
+    /**
      * Elimina la primera ocurrencia de un dato en la lista.
-     * @param dato El dato a eliminar.
-     * @return true si se eliminó, false si no se encontró.
+     * 
+     * @param dato El dato a eliminar
+     * @return true si se eliminó, false si no se encontró
      */
     public boolean eliminar(T dato) {
         if (estaVacia()) {
@@ -61,35 +87,63 @@ public class Lista<T> {
             return false;
         }
         
+        eliminarNodo(actual);
+        return true;
+    }
+    
+    /**
+     * Elimina el elemento en una posición específica.
+     * 
+     * @param indice La posición del elemento a eliminar (0 = primero)
+     * @return El dato eliminado, o null si el índice es inválido
+     */
+    public T eliminarPorIndice(int indice) {
+        if (indice < 0 || indice >= tamaño) {
+            return null;
+        }
+        
+        Nodo<T> actual = obtenerNodo(indice);
+        T datoEliminado = actual.getDato();
+        eliminarNodo(actual);
+        
+        return datoEliminado;
+    }
+    
+    /**
+     * Método auxiliar para eliminar un nodo específico.
+     * 
+     * @param nodo El nodo a eliminar
+     */
+    private void eliminarNodo(Nodo<T> nodo) {
         // Caso 1: Eliminar el único nodo
         if (cabeza == cola) {
             cabeza = null;
             cola = null;
         }
         // Caso 2: Eliminar la cabeza
-        else if (actual == cabeza) {
+        else if (nodo == cabeza) {
             cabeza = cabeza.getSiguiente();
             cabeza.setAnterior(null);
         }
         // Caso 3: Eliminar la cola
-        else if (actual == cola) {
+        else if (nodo == cola) {
             cola = cola.getAnterior();
             cola.setSiguiente(null);
         }
         // Caso 4: Eliminar un nodo intermedio
         else {
-            actual.getAnterior().setSiguiente(actual.getSiguiente());
-            actual.getSiguiente().setAnterior(actual.getAnterior());
+            nodo.getAnterior().setSiguiente(nodo.getSiguiente());
+            nodo.getSiguiente().setAnterior(nodo.getAnterior());
         }
         
         tamaño--;
-        return true;
     }
     
     /**
      * Busca un dato en la lista.
-     * @param dato El dato a buscar.
-     * @return El dato si se encuentra, null si no.
+     * 
+     * @param dato El dato a buscar
+     * @return El dato si se encuentra, null si no
      */
     public T buscar(T dato) {
         Nodo<T> actual = cabeza;
@@ -104,10 +158,22 @@ public class Lista<T> {
     
     /**
      * Obtiene un elemento por su posición.
-     * @param indice La posición (0 = primero).
-     * @return El dato en esa posición, o null si el índice es inválido.
+     * 
+     * @param indice La posición (0 = primero)
+     * @return El dato en esa posición, o null si el índice es inválido
      */
     public T obtener(int indice) {
+        Nodo<T> nodo = obtenerNodo(indice);
+        return nodo != null ? nodo.getDato() : null;
+    }
+    
+    /**
+     * Obtiene el nodo en una posición específica.
+     * 
+     * @param indice La posición del nodo
+     * @return El nodo en esa posición, o null si el índice es inválido
+     */
+    private Nodo<T> obtenerNodo(int indice) {
         if (indice < 0 || indice >= tamaño) {
             return null;
         }
@@ -129,14 +195,15 @@ public class Lista<T> {
             }
         }
         
-        return actual.getDato();
+        return actual;
     }
     
     // ========== MÉTODOS DE CONSULTA ==========
     
     /**
      * Obtiene el tamaño de la lista.
-     * @return Número de elementos.
+     * 
+     * @return Número de elementos
      */
     public int getTamaño() {
         return tamaño;
@@ -144,7 +211,8 @@ public class Lista<T> {
     
     /**
      * Verifica si la lista está vacía.
-     * @return true si está vacía, false si no.
+     * 
+     * @return true si está vacía, false si no
      */
     public boolean estaVacia() {
         return cabeza == null;
@@ -152,11 +220,30 @@ public class Lista<T> {
     
     /**
      * Verifica si la lista contiene un dato.
-     * @param dato El dato a verificar.
-     * @return true si contiene el dato, false si no.
+     * 
+     * @param dato El dato a verificar
+     * @return true si contiene el dato, false si no
      */
     public boolean contiene(T dato) {
         return buscar(dato) != null;
+    }
+    
+    /**
+     * Obtiene el primer elemento de la lista.
+     * 
+     * @return El primer elemento, o null si la lista está vacía
+     */
+    public T getPrimero() {
+        return cabeza != null ? cabeza.getDato() : null;
+    }
+    
+    /**
+     * Obtiene el último elemento de la lista.
+     * 
+     * @return El último elemento, o null si la lista está vacía
+     */
+    public T getUltimo() {
+        return cola != null ? cola.getDato() : null;
     }
     
     // ========== MÉTODOS DE RECORRIDO ==========
@@ -197,8 +284,28 @@ public class Lista<T> {
     }
     
     /**
+     * Convierte la lista a un arreglo.
+     * 
+     * @return Arreglo con los elementos de la lista
+     */
+    @SuppressWarnings("unchecked")
+    public T[] toArray() {
+        T[] arreglo = (T[]) new Object[tamaño];
+        Nodo<T> actual = cabeza;
+        int i = 0;
+        
+        while (actual != null) {
+            arreglo[i++] = actual.getDato();
+            actual = actual.getSiguiente();
+        }
+        
+        return arreglo;
+    }
+    
+    /**
      * Representación en texto de la lista.
-     * @return String con todos los elementos.
+     * 
+     * @return String con todos los elementos
      */
     @Override
     public String toString() {
