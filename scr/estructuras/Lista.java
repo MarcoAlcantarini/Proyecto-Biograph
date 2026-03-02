@@ -23,7 +23,6 @@ public class Lista<T> {
         tamaño = 0;
     }
     
-    // ========== OPERACIONES BÁSICAS ==========
     
     /**
      * Agrega un elemento al final de la lista.
@@ -198,8 +197,6 @@ public class Lista<T> {
         return actual;
     }
     
-    // ========== MÉTODOS DE CONSULTA ==========
-    
     /**
      * Obtiene el tamaño de la lista.
      * 
@@ -246,7 +243,6 @@ public class Lista<T> {
         return cola != null ? cola.getDato() : null;
     }
     
-    // ========== MÉTODOS DE RECORRIDO ==========
     
     /**
      * Recorre la lista de inicio a fin y muestra los elementos.
@@ -327,4 +323,5 @@ public class Lista<T> {
         return sb.toString();
     }
 }
+
 
