@@ -364,6 +364,74 @@ public class Grafo {
     }
     
     /**
+    * Encuentra una ruta entre dos proteínas usando DFS (Búsqueda en Profundidad).
+    * @param origen Proteína de inicio
+    * @param destino Proteína de destino
+    * @return Lista con la ruta encontrada, o lista vacía si no hay ruta
+    */
+    public Lista<String> rutaDFS(String origen, String destino) {
+        // Validar que las proteínas existan
+        if (!proteinas.contiene(origen) || !proteinas.contiene(destino)) {
+            return new Lista<>();
+        }
+
+        Lista<String> visitadas = new Lista<>();
+        Lista<String> rutaActual = new Lista<>();
+        Lista<String> rutaEncontrada = new Lista<>();
+
+        // Llamar al método auxiliar recursivo
+        dfsRecursivo(origen, destino, visitadas, rutaActual, rutaEncontrada);
+
+        return rutaEncontrada;
+    }
+
+    /**
+     * Método auxiliar recursivo para DFS
+     */
+    private void dfsRecursivo(String actual, String destino, 
+                              Lista<String> visitadas, 
+                              Lista<String> rutaActual, 
+                              Lista<String> rutaEncontrada) {
+
+        // Marcar nodo como visitado y agregar a ruta actual
+        visitadas.agregar(actual);
+        rutaActual.agregar(actual);
+
+        // Si encontramos el destino, guardar la ruta
+        if (actual.equals(destino)) {
+            // Copiar la ruta actual a rutaEncontrada
+            for (int i = 0; i < rutaActual.getTamaño(); i++) {
+                rutaEncontrada.agregar(rutaActual.obtener(i));
+            }
+            return;
+        }
+
+        // Obtener todas las interacciones de la proteína actual
+        Lista<Proteinas> interaccionesActuales = getInteraccionesDe(actual);
+
+        // Explorar vecinos no visitados
+        for (int i = 0; i < interaccionesActuales.getTamaño(); i++) {
+            Proteinas a = interaccionesActuales.obtener(i);
+
+            // Determinar el vecino (el otro extremo de la arista)
+            String vecino;
+            if (a.getOrigen().equals(actual)) {
+                vecino = a.getDestino();
+            } else {
+                vecino = a.getOrigen();
+            }
+
+            // Si el vecino no ha sido visitado y aún no encontramos ruta
+            if (!visitadas.contiene(vecino) && rutaEncontrada.estaVacia()) {
+                dfsRecursivo(vecino, destino, visitadas, rutaActual, rutaEncontrada);
+            }
+        }
+
+        // Retroceder 
+        rutaActual.eliminar(actual);
+    }
+    
+    /**
      * Elimina todas las proteínas e interacciones del grafo.
      */
     public void vaciar() {
